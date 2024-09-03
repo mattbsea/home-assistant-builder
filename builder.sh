@@ -16,6 +16,7 @@ DOCKER_LATEST=true
 DOCKER_PUSH=true
 DOCKER_USER=
 DOCKER_PASSWORD=
+DOCKER_REPO=hub.docker.com
 DOCKER_LOCAL=false
 SELF_CACHE=false
 CUSTOM_CACHE_TAG=
@@ -119,6 +120,8 @@ Options:
        Use a custom tag for the build cache.
     -d, --docker-hub <DOCKER_REPOSITORY>
        Set or overwrite the docker repository.
+    --docker-repo 
+       Override the docker repository used for storing the image
     --docker-hub-check
        Check if the version already exists before starting the build.
     --docker-user <USER>
@@ -889,6 +892,10 @@ while [[ $# -gt 0 ]]; do
             DOCKER_HUB=$2
             shift
             ;;
+	--docker-repo)
+ 	    DOCKER_REPO=$2
+      	    shift
+	    ;;
         --version-from)
             VERSION_FROM=$2
             shift
@@ -979,7 +986,7 @@ copy_config_tmp
 
 # Login into dockerhub
 if [ -n "$DOCKER_USER" ] && [ -n "$DOCKER_PASSWORD" ]; then
-  docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+  docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD" "${DOCKER_REPO}"
 fi
 
 # Select arch build
